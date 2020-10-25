@@ -1,9 +1,10 @@
 module HDF5Arrays
 
-using DiskArrays, HDF5
+using DiskArrays
+using HDF5: HDF5Dataset
 
-import Base: size, getindex, _reshape, Array
-import DiskArrays: eachchunk, haschunks, readblock!, writeblock!, GridChunks, Chunked, Unchunked
+import Base: size
+import DiskArrays: readblock!, writeblock!
 
 export HDF5Array
 
