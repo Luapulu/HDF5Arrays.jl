@@ -1,7 +1,7 @@
 name = "HDF5Arrays"
 uuid = "c12d878e-345f-4eaf-97ca-0b55185efc42"
 authors = ["Paul Nemec"]
-version = "0.1.0"
+version = "0.0.1"
 
 [deps]
 DiskArrays = "3c3547ce-8d99-4f5e-a174-61eb10b00ae3"
