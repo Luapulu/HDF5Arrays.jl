@@ -40,11 +40,11 @@ end
 
     arr[5, 5, 5] = 12345.6
     @test arr[5, 5, 5] == 12345.6
-    @test x[5, 5, 5] == 12345.6
+    @test dset[5, 5, 5] == 12345.6
 
     arr[:, 1, 1] = 1:10
     @test arr[:, 1, 1] == 1:10
-    @test x[:, 1, 1] == 1:10
+    @test dset[:, 1, 1] == 1:10
 end
 
 # @testset "Chained" begin
