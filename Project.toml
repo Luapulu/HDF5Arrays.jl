@@ -4,6 +4,7 @@ authors = ["Paul Nemec"]
 version = "0.1.0"
 
 [deps]
+ChainedArrays = "154148eb-a451-4506-8097-cb641d95622d"
 DiskArrays = "3c3547ce-8d99-4f5e-a174-61eb10b00ae3"
 HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
 
