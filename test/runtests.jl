@@ -17,6 +17,8 @@ cd(mktempdir())
     @test HDF5Array(g, "x") == x
     @test HDF5Array(dset) == x
 
+    @test_throws ErrorException get_chunk(HDF5Array(dset))
+
     g["c", "chunk", (5, 6, 7)] = rand(15, 8, 10)
     @test get_chunk(HDF5Array(g, "c")) == get_chunk(g["c"]) == (5, 6, 7)
 
