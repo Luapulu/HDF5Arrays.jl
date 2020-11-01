@@ -1,8 +1,17 @@
 _tofile(f::AbstractString) = h5open(f, "r+")
 _tofile(f::DataFile) = f
 
-HDF5Array(dset::HDF5Dataset) =
-    HDF5Array{eltype(dset), ndims(dset), HDF5Dataset, Nothing}(dset)
+get_chunk(arr::HDF5Array{<:Any, <:Any, <:Any, Nothing}) = error("given HDF5Array is not chunked")
+get_chunk(arr::HDF5Array{<:Any, N, HDF5Dataset, NTuple{N, Int}}) where {N} = arr.chunk
+
+function HDF5Array(dset::HDF5Dataset)
+    try
+        c = get_chunk(dset)
+        return HDF5Array{eltype(dset), ndims(dset), HDF5Dataset, typeof(c)}(dset, c)
+    catch ErrorException
+        return HDF5Array{eltype(dset), ndims(dset), HDF5Dataset, Nothing}(dset)
+    end
+end
 HDF5Array(file::Union{AbstractString, DataFile}, path::AbstractString) =
     HDF5Array(_tofile(file)[path])
 
