@@ -9,6 +9,7 @@ TiledIteration = "06e1c1a7-607b-532d-9fad-de7d9aa2abac"
 
 [compat]
 julia = "^1.1"
+HDF5 = "^0.13"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
