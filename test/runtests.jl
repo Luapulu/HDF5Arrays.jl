@@ -17,6 +17,12 @@ cd(mktempdir())
     @test HDF5Array(g, "x") == x
     @test HDF5Array(dset) == x
 
+    g["c", "chunk", (5, 6, 7)] = rand(15, 8, 10)
+    @test get_chunk(HDF5Array(g, "c")) == get_chunk(g["c"]) == (5, 6, 7)
+
+    # Implementation detail
+    @test HDF5Array(g, "c") isa HDF5Array{Float64, 3, HDF5Dataset, NTuple{3, Int}}
+
     y = HDF5Array{Float64, 2}(path, "group/y", undef, 100, 5)
     @test g["y"] isa HDF5Dataset
     @test eltype(g["y"]) == Float64
@@ -60,11 +66,17 @@ end
 
     arr[5, 5, 5] = 12345.6
     @test arr[5, 5, 5] == 12345.6
+    @test arr[CartesianIndex(5, 5, 5)] == 12345.6
     @test dset[5, 5, 5] == 12345.6
+
+    @inferred arr[5, 5, 5]
 
     arr[:, 1, 1] = 1:10
     @test arr[:, 1, 1] == 1:10
+    @test all(arr[CartesianIndices((1:10, 1:1, 1:1))] .== 1:10)
     @test dset[:, 1, 1] == 1:10
+
+    @test_broken @inferred arr[:, 1, 1]
 
     yarr = HDF5Array{Float64, 2}(path, "group/y", undef, 30, 5)
     ydset = h5open(path, "r+")["group/y"]
@@ -74,6 +86,32 @@ end
 
     yarr[:, 2] = 1:30
     @test yarr[:, 2] == 1:30
+end
+
+@testset "Iteration Interface" begin
+    path = tempname() * ".h5"
+    h5open(path, "w")["x", "chunk", (3, 2)] = Array(reshape(1:60, 15, 4))
+
+    arr = HDF5Array(path, "x")
+
+    x, s = iterate(arr)
+    @test firstindex(arr) == CartesianIndex(1, 1)
+    @test x == first(x) == 1
+
+    x, s = iterate(arr, s) # 2
+    x, s = iterate(arr, s) # 3
+    x, s = iterate(arr, s) # next col => x = 16
+    @test x == 16
+
+    x, s = iterate(arr, s) # 17
+    x, s = iterate(arr, s) # 18
+    x, s = iterate(arr, s) # next chunk => x = 4
+    @test x == 4
+
+    c = collect(y for y in arr)
+    @test length(c) == length(arr)
+    @test lastindex(arr) == CartesianIndex(15, 4)
+    @test last(c) == last(arr)
 end
 
 # @testset "Chained" begin
