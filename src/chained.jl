@@ -1,6 +1,0 @@
-module ChainedArrays
-
-
-
-
-end

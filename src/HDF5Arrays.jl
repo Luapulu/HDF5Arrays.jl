@@ -81,6 +81,5 @@ firstindex(arr::HDF5Array) = first(eachindex(arr))
 lastindex(arr::HDF5Array) = last(eachindex(arr))
 
 include("construct.jl")
-include("chained.jl")
 
 end
